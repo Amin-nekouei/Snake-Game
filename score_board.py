@@ -15,8 +15,11 @@ class ScoreBoard(Turtle):
 
     def show(self):
         # Displays the current score and high score on the screen.
-        with open("highscore.txt", mode="r") as high_sore:
-            self.high_score = high_sore.read()
+        try:
+            with open("highscore.txt", mode="r") as high_sore:
+                self.high_score = int(high_sore.read().strip() or 0)
+        except (FileNotFoundError, ValueError):
+            self.high_score = 0  # First run, or the file is empty or invalid
         self.write(f"             Score: {self.score}                 High Score: {self.high_score}", False,
                    align="center",
                    font=("Arial", 15, "normal"))
@@ -24,7 +27,7 @@ class ScoreBoard(Turtle):
     def scoring(self):
         # Updates the score, checks for new high score, and updates display accordingly.
         self.score += 1
-        if self.score > int(self.high_score):  # Update high score if current score is higher
+        if self.score > self.high_score:  # Update high score if current score is higher
             self.high_score = self.score
             with open("highscore.txt", mode="w") as high_sore:
                 high_sore.write(f"{self.high_score}")  # Write new high score to file
